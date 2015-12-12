@@ -1,84 +1,57 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
+using System;
+using Assets;
 
-public class Map : MonoBehaviour {
-    public Transform Path;
-    public Transform Spawn;
-    public Transform Exit;
-    public Transform Intersection;
+public class Map {
 
-    public Transform Selector;
+    public int Width = 10;
+    public int Height = 10;
 
-    private MapGenerator Generator;
+    private Tile[,] Tiles;
 
-    private List<Transform> Intersections;
-    private int SelectedIntersection;
-    private Transform SelectorInstance;
+    public Map(int width, int height)
+    {
+        Width = width;
+        Height = height;
 
-	// Use this for initialization
-	void Start () {
-        Intersections = new List<Transform>();
+        Tiles = new Tile[10, 10];
 
-        Generator = new MapGenerator(10, 10);
-        Generator.Iterate(tile =>
+        for(var i = 0; i < 10; i++)
         {
-            Transform prefab = null;
+            Tiles[4, i] = new Path(4, i);
+            Tiles[7, i] = new Path(7, i);
+            Tiles[i, 4] = new Path(i, 4);
+            
+            Tiles[4, 9] = new Spawn(4, 9);
+            Tiles[0, 4] = new Spawn(0, 4);
+            
+            Tiles[4, 4] = new Intersection(4, 4);
+            Tiles[7, 4] = new Intersection(7, 4);
+            
+            Tiles[7, 0] = new Exit(7, 0);
+            Tiles[7, 9] = new Exit(7, 9);            
+        }
+    }
 
-            if(tile is Assets.Path)
+    public void Iterate(Action<Tile> operation)
+    {
+        for(var x = 0; x < Width; x++)
+        {
+            for(var y = 0; y < Height; y++)
             {
-                prefab = Path;
-            }
-            else if(tile is Assets.Spawn)
-            {
-                prefab = Spawn;
-            }
-            else if (tile is Assets.Exit)
-            {
-                prefab = Exit;
-            }
-            else if (tile is Assets.Intersection)
-            {
-                prefab = Intersection;
-            }
-
-            if (prefab != null)
-            {
-                var path = Instantiate(prefab, new Vector3(tile.x - 4.5f, 0, tile.y - 4.5f), Quaternion.identity);
-
-                if(prefab == Intersection)
+                if (Tiles[x, y] != null && Tiles[x, y].GetType().IsSubclassOf(typeof(Tile)) )
                 {
-                    Intersections.Add((Transform) path);
+                    operation(Tiles[x, y]);
                 }
             }
-        });
-
-        SelectorInstance = (Transform) Instantiate(Selector, new Vector3(0, -10, 0), Quaternion.identity);
-        SetSelectedIntersection(0);
-    }
-	
-	// Update is called once per frame
-	void Update () {
-        if (Input.GetButtonDown("Button1"))
-        {
-            SetSelectedIntersection(SelectedIntersection + 1);
         }
-
-        if (Input.GetButtonDown("Button2"))
-        {
-            Intersections[SelectedIntersection].rotation *= Quaternion.AngleAxis(90, Vector3.up);
-        }
-	}
-
-    private void SetSelectedIntersection(int selection)
-    {
-        SelectedIntersection = selection % Intersections.Count;
-        UpdateSelectorPosition();
     }
 
-    private void UpdateSelectorPosition()
+    public bool GetNextTarget(ref int x, ref int y, ref int direction)
     {
-        var selectedIntersection = Intersections[SelectedIntersection];
-        SelectorInstance.transform.position = new Vector3(selectedIntersection.position.x, 2, selectedIntersection.position.z);
+        x = 1;
+        y = 4;
+        return true;
     }
 }
