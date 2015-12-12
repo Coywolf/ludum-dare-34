@@ -37,6 +37,17 @@ namespace Assets
     {
         public Transform Instance;
 
+        private int _direction = 0;
+        public int Direction
+        {
+            get { return _direction; }
+            set
+            {
+                _direction = value % 4;
+                Instance.rotation = Quaternion.AngleAxis(90 * _direction, Vector3.up);
+            }
+        }
+
         public Intersection(int x, int y) : base(x, y) { }
     }
 }

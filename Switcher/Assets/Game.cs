@@ -15,15 +15,19 @@ public class Game : MonoBehaviour {
     public AudioClip SelectClip;
     public AudioClip RotateClip;
 
+    [Header("Game")]
+    public int Lives = 5;
+    public int Points = 0;
+
     private Map Map;
 
-    private List<Transform> Intersections;
+    private List<Assets.Intersection> Intersections;
     private int SelectedIntersection;
     private Transform SelectorInstance;
 
 	// Use this for initialization
 	void Start () {
-        Intersections = new List<Transform>();
+        Intersections = new List<Assets.Intersection>();
 
         Map = new Map(10, 10);
         Map.Iterate(tile =>
@@ -57,7 +61,7 @@ public class Game : MonoBehaviour {
                 }
                 else if(prefab == Intersection)
                 {
-                    Intersections.Add((Transform) path);
+                    Intersections.Add((Assets.Intersection)tile);
                     ((Assets.Intersection)tile).Instance = (Transform) path;
                 }
             }
@@ -81,7 +85,7 @@ public class Game : MonoBehaviour {
 
         if (Input.GetButtonDown("Button2"))
         {
-            Intersections[SelectedIntersection].rotation *= Quaternion.AngleAxis(90, Vector3.up);
+            Intersections[SelectedIntersection].Direction++;
 
             if (RotateClip != null)
             {
@@ -89,6 +93,13 @@ public class Game : MonoBehaviour {
             }
         }
 	}
+
+    public void DestroyUnit(Unit unit, int x, int y)
+    {
+        Destroy(unit.gameObject);
+        //lives
+        //points
+    }
 
     private void SetSelectedIntersection(int selection)
     {
@@ -99,6 +110,6 @@ public class Game : MonoBehaviour {
     private void UpdateSelectorPosition()
     {
         var selectedIntersection = Intersections[SelectedIntersection];
-        SelectorInstance.transform.position = new Vector3(selectedIntersection.position.x, 2, selectedIntersection.position.z);
+        SelectorInstance.transform.position = new Vector3(selectedIntersection.Instance.position.x, 2, selectedIntersection.Instance.position.z);
     }
 }
