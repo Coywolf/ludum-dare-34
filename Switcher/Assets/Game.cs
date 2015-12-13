@@ -113,8 +113,16 @@ public class Game : MonoBehaviour {
                 }
                 else if (prefab == Intersection)
                 {
-                    Intersections.Add((Assets.Intersection)tile);
-                    ((Assets.Intersection)tile).Instance = path;
+                    var inter = tile as Assets.Intersection;
+                    Intersections.Add(inter);
+                    (inter).Instance = path;
+
+                    var point = new Assets.Point(inter.x, inter.y);
+                    var nextPoint = point.Move(inter.Direction);
+                    if (Map.GetTile(nextPoint.X, nextPoint.Y) == null)
+                    {
+                        inter.Direction++;
+                    }
                 }
                 else if (prefab == Exit)
                 {
