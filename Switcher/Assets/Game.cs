@@ -69,10 +69,6 @@ public class Game : MonoBehaviour {
                 AudioSource.PlayClipAtPoint(RotateClip, Camera.main.transform.position);
             }
         }
-        if (Input.GetKeyDown("p"))
-        {
-            CreateMap();
-        }
 	}
 
     private void CreateMap()
