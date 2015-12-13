@@ -32,6 +32,7 @@ public class GuiController : MonoBehaviour {
 
     public void SetPoints(int points)
     {
+        Points = points;
         PointsText.text = "Points: " + points;
     }
 
