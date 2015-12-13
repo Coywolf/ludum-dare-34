@@ -28,7 +28,7 @@ public class Map {
             Tiles[7, i] = new Path(7, i);
             Tiles[i, 4] = new Path(i, 4);
             
-            //Tiles[4, 9] = new Spawn(4, 9);
+            Tiles[4, 9] = new Spawn(4, 9);
             Tiles[0, 4] = new Spawn(0, 4);
             
             Tiles[4, 4] = new Intersection(4, 4);
@@ -79,7 +79,7 @@ public class Map {
         }
 
         // this is not a path, something went wrong
-        if ( !Tiles[targetX, targetY].GetType().IsSubclassOf(typeof(Tile)) )
+        if ( Tiles[targetX, targetY] == null )
         {
             return false;
         }
