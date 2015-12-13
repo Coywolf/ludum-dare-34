@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 using Assets;
 
@@ -8,12 +9,16 @@ public class Map {
     public int Width = 10;
     public int Height = 10;
 
+    public List<Color> Colors;
+
     private Tile[,] Tiles;
 
     public Map(int width, int height)
     {
         Width = width;
         Height = height;
+
+        Colors = new List<Color>() { Color.red, Color.blue };
 
         Tiles = new Tile[10, 10];
 
@@ -29,8 +34,8 @@ public class Map {
             Tiles[4, 4] = new Intersection(4, 4);
             Tiles[7, 4] = new Intersection(7, 4);
             
-            Tiles[7, 0] = new Exit(7, 0);
-            Tiles[7, 9] = new Exit(7, 9);            
+            Tiles[7, 0] = new Exit(7, 0, Color.red);
+            Tiles[7, 9] = new Exit(7, 9, Color.blue);            
         }
     }
 
@@ -83,5 +88,10 @@ public class Map {
         y = targetY;
 
         return true;
+    }
+
+    public Tile GetTile(int x, int y)
+    {
+        return Tiles[x, y];
     }
 }

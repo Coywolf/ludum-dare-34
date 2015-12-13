@@ -40,6 +40,6 @@ public class Spawner : MonoBehaviour {
     public void Spawn()
     {
         var unit = Instantiate(Unit, new Vector3(transform.position.x, 1, transform.position.z), Quaternion.Euler(0, 0, 90)) as Transform;
-        unit.GetComponent<Unit>().Initialize(X, Y, 0, Map);
+        unit.GetComponent<Unit>().Initialize(X, Y, 0, Map, Map.Colors[Random.Range(0, Map.Colors.Count)]);
     }
 }

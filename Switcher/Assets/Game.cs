@@ -64,6 +64,13 @@ public class Game : MonoBehaviour {
                     Intersections.Add((Assets.Intersection)tile);
                     ((Assets.Intersection)tile).Instance = (Transform) path;
                 }
+                else if(prefab == Exit)
+                {
+                    foreach(var ren in ((Transform)path).GetChild(0).GetComponentsInChildren<Renderer>())
+                    {
+                        ren.material.color = ((Assets.Exit)tile).Color;
+                    }
+                }
             }
         });
 
@@ -97,8 +104,17 @@ public class Game : MonoBehaviour {
     public void DestroyUnit(Unit unit, int x, int y)
     {
         Destroy(unit.gameObject);
-        //lives
-        //points
+
+        var tile = Map.GetTile(x, y);
+
+        if(tile is Assets.Exit && ((Assets.Exit)tile).Color == unit.Color)
+        {
+            Points++;
+        }
+        else
+        {
+            Lives--;
+        }
     }
 
     private void SetSelectedIntersection(int selection)

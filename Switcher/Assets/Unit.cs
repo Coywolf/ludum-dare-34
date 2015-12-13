@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Unit : MonoBehaviour {
     public float Speed = 0.3f;
+
+    public Color Color;
     
     private int TargetX;
     private int TargetY;
@@ -33,7 +35,7 @@ public class Unit : MonoBehaviour {
         }
 	}
 
-    public void Initialize(int x, int y, int direction, Map map)
+    public void Initialize(int x, int y, int direction, Map map, Color color)
     {
         TargetX = x;
         TargetY = y;
@@ -42,5 +44,11 @@ public class Unit : MonoBehaviour {
 
         Map.GetNextTarget(ref TargetX, ref TargetY, ref Direction);
         transform.rotation = Quaternion.Euler(0, 90 * Direction, 90);
+
+        Color = color;
+        foreach(var ren in GetComponentsInChildren<Renderer>())
+        {
+            ren.material.color = color;
+        }
     }
 }

@@ -30,7 +30,13 @@ namespace Assets
 
     public class Exit : Tile
     {
-        public Exit(int x, int y) : base(x, y) { }
+        public Color Color;
+
+        public Exit(int x, int y, Color color) 
+            : base(x, y)
+        {
+            Color = color;
+        }
     }
 
     public class Intersection : Tile
