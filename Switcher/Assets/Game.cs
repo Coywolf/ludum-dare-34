@@ -24,9 +24,14 @@ public class Game : MonoBehaviour {
     private List<Assets.Intersection> Intersections;
     private int SelectedIntersection;
     private Transform SelectorInstance;
+    private GuiController GuiController;
 
 	// Use this for initialization
 	void Start () {
+        GuiController = FindObjectOfType<GuiController>();
+        GuiController.SetLives(Lives);
+        GuiController.SetPoints(Points);
+
         Intersections = new List<Assets.Intersection>();
 
         Map = new Map(10, 10);
@@ -100,7 +105,7 @@ public class Game : MonoBehaviour {
             }
         }
 	}
-
+    
     public void DestroyUnit(Unit unit, int x, int y)
     {
         Destroy(unit.gameObject);
@@ -110,10 +115,12 @@ public class Game : MonoBehaviour {
         if(tile is Assets.Exit && ((Assets.Exit)tile).Color == unit.Color)
         {
             Points++;
+            GuiController.SetPoints(Points);
         }
         else
         {
             Lives--;
+            GuiController.SetLives(Lives);
         }
     }
 
