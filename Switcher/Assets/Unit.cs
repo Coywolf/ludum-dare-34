@@ -12,13 +12,17 @@ public class Unit : MonoBehaviour {
 
     private Map Map;
 
+    private GuiController Controller;
+
 	// Use this for initialization
 	void Start () {
-	    
+        Controller = FindObjectOfType<GuiController>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        if (Controller.GameOverUi.activeInHierarchy) { return; }
+
         var step = Speed * Time.deltaTime;
         transform.position = Vector3.MoveTowards(transform.position, new Vector3(TargetX, transform.position.y, TargetY), step);
 

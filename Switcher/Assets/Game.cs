@@ -14,6 +14,8 @@ public class Game : MonoBehaviour {
     [Header("Sounds")]
     public AudioClip SelectClip;
     public AudioClip RotateClip;
+    public AudioClip HitClip;
+    public AudioClip ScoreClip;
 
     [Header("Game")]
     public int Lives = 5;
@@ -58,20 +60,21 @@ public class Game : MonoBehaviour {
 
             if (prefab != null)
             {
-                var path = Instantiate(prefab, new Vector3(tile.x, 0, tile.y), Quaternion.identity);
+                var path = Instantiate(prefab, new Vector3(tile.x, 0, tile.y), Quaternion.identity) as Transform;
+                path.parent = transform;
 
                 if(prefab == Spawn)
                 {
-                    ((Transform)path).GetComponent<Spawner>().Initialize(tile.x, tile.y, Map);
+                    path.GetComponent<Spawner>().Initialize(tile.x, tile.y, Map);
                 }
                 else if(prefab == Intersection)
                 {
                     Intersections.Add((Assets.Intersection)tile);
-                    ((Assets.Intersection)tile).Instance = (Transform) path;
+                    ((Assets.Intersection)tile).Instance = path;
                 }
                 else if(prefab == Exit)
                 {
-                    foreach(var ren in ((Transform)path).GetChild(0).GetComponentsInChildren<Renderer>())
+                    foreach(var ren in path.GetChild(0).GetComponentsInChildren<Renderer>())
                     {
                         ren.material.color = ((Assets.Exit)tile).Color;
                     }
@@ -80,11 +83,14 @@ public class Game : MonoBehaviour {
         });
 
         SelectorInstance = (Transform) Instantiate(Selector, new Vector3(0, -10, 0), Quaternion.identity);
+        SelectorInstance.parent = transform;
         SetSelectedIntersection(0);
     }
 	
 	// Update is called once per frame
 	void Update () {
+        if (GuiController.GameOverUi.activeInHierarchy) { return; }
+
         if (Input.GetButtonDown("Button1"))
         {
             SetSelectedIntersection(SelectedIntersection + 1);
@@ -114,11 +120,19 @@ public class Game : MonoBehaviour {
 
         if(tile is Assets.Exit && ((Assets.Exit)tile).Color == unit.Color)
         {
+            if(ScoreClip != null)
+            {
+                AudioSource.PlayClipAtPoint(ScoreClip, Camera.main.transform.position);
+            }
             Points++;
             GuiController.SetPoints(Points);
         }
         else
         {
+            if (HitClip != null)
+            {
+                AudioSource.PlayClipAtPoint(HitClip, Camera.main.transform.position);
+            }
             Lives--;
             GuiController.SetLives(Lives);
         }

@@ -14,13 +14,18 @@ public class Spawner : MonoBehaviour {
     private int X;
     private int Y;
 
-	// Use this for initialization
-	void Start () {
+    private GuiController Controller;
+
+    // Use this for initialization
+    void Start () {
         Frequency = Random.Range(MinFrequency, MaxFrequency);
-	}
+        Controller = FindObjectOfType<GuiController>();
+    }
 	
 	// Update is called once per frame
 	void Update () {
+        if (Controller.GameOverUi.activeInHierarchy) { return; }
+
         TimeSinceSpawn += Time.deltaTime;
 
         if(TimeSinceSpawn >= Frequency)
@@ -40,6 +45,7 @@ public class Spawner : MonoBehaviour {
     public void Spawn()
     {
         var unit = Instantiate(Unit, new Vector3(transform.position.x, 1, transform.position.z), Quaternion.Euler(0, 0, 90)) as Transform;
+        unit.parent = transform.parent;
         unit.GetComponent<Unit>().Initialize(X, Y, 0, Map, Map.Colors[Random.Range(0, Map.Colors.Count)]);
     }
 }
